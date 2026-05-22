@@ -60,6 +60,20 @@ Together, these agents form a fully self-healing, closed development loop that o
 
 ## 🚀 Setup & Execution Guide
 
+This repository supports two execution modes:
+
+> [!TIP]
+> ### 1. 🚀 Native Subscription Mode (Zero-Config - Recommended)
+> **No API keys or manual credentials required!**
+> Under this mode, the entire AI reasoning, code generation, and PR drafting are performed natively by your active subscription-backed Antigravity agents. All API usage is fully covered under your existing AI Max / Joules plan.
+> 
+> * **Automatic Execution**: Driven entirely by the hourly background scheduler tasks (`task-102` for PR Reviews and `task-774` for Issue Coding) utilizing the pre-authenticated `gh` CLI.
+> * **Zero Local Credentials**: You only need node, git, and an authenticated GitHub CLI session.
+
+> [!NOTE]
+> ### 2. 🔌 Standalone Node.js / CI Mode (Optional Fallback)
+> If you run the scripts in a pure Node.js environment outside of the Antigravity runtime (or on external servers), you must supply a personal Gemini API Key as an environment variable fallback.
+
 ### Local Prerequisites
 1. **Node.js**: Node 18+ (utilizes built-in `fetch`).
 2. **GitHub CLI (`gh`)**: Must be pre-authenticated locally (`gh auth login`).
@@ -71,7 +85,7 @@ Install dependencies (convenience wrapper):
 npm install
 ```
 
-Scan PRs and generate the dynamic status report & dashboard:
+Scan PRs and generate the dynamic status report & dashboard (Zero-Config, no API key needed):
 ```bash
 npm run scan
 ```
@@ -81,7 +95,7 @@ Verify target unaddressed community issues:
 npm run find-target
 ```
 
-Run the standalone issue coder script (requires `GEMINI_API_KEY`):
+Run the standalone issue coder script (Only required when running in a standalone pure Node.js environment outside Antigravity):
 ```bash
 $env:GEMINI_API_KEY="your-api-key"
 npm run code-issue
@@ -91,7 +105,7 @@ npm run code-issue
 
 ## ⏰ Background Scheduling Configuration
 
-To achieve completely unattended execution, register these agents as background tasks in your Antigravity scheduler:
+To achieve completely unattended execution under the **Zero-Config Native Subscription Mode**, register these agents as background tasks in your Antigravity scheduler:
 
 ### 1. PR Reviewer Cron Job (Hourly)
 ```javascript
@@ -130,7 +144,7 @@ Open it directly in any web browser to experience a premium, glassmorphic develo
 
 ## 🛠️ Deploying as a GitHub Action Workflow
 
-To run the PR reviewer automatically on every pull request, copy `.github/workflows/gemini-reviewer.yml` into your target repository and add your Gemini API Key as a repository secret:
+To run the PR reviewer automatically on every pull request on GitHub's cloud servers (outside your local Antigravity runtime), copy `.github/workflows/gemini-reviewer.yml` into your target repository and add a Gemini API Key as a repository secret:
 
 ```yaml
 # Configure under target-repo/.github/workflows/gemini-reviewer.yml
