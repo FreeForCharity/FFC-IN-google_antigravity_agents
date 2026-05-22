@@ -34,6 +34,45 @@ Together, these agents form a fully self-healing, closed development loop that o
                     └──────────────────────────────┘
 ```
 
+### 🔄 1. PR Reviewer Agent Loop (`task-102`)
+The following flowchart illustrates the automated scanner and code review publishing workflow:
+
+```mermaid
+graph TD
+    A[Hourly Cron Trigger / task-102] --> B[review_runner.js Scans Open PRs]
+    B --> C{PR Author check}
+    C -->|Bot / Dependabot| D[Filter Out PR]
+    C -->|clarkemoyer or External Developer| E[Fetch PR Diff using gh CLI]
+    E --> F{Diff Size Check}
+    F -->|> 10k lines / 500k chars| G[Skip PR - Too Large]
+    F -->|<= 10k lines| H[Queue to pending_reviews/ directory]
+    H --> I[Agent Reads Diff & Drafts Professional Code Review]
+    I --> J[post_review.js publishes review comment via gh CLI]
+    J --> K[Update pr_reviewer_state.json timestamp]
+    K --> L[Generate status report & HTML Dashboard]
+    D --> L
+    G --> L
+```
+
+### 🛠️ 2. Autonomous Issue Coder Agent Loop (`task-774`)
+The following flowchart illustrates the automated end-to-end community issue-to-Draft-PR coding workflow:
+
+```mermaid
+graph TD
+    A[Hourly Cron Trigger / task-774] --> B[review_runner.js Scans Open Issues]
+    B --> C[Filter for User-Generated Issues]
+    C --> D[Identify oldest issue in 'Ready for Work' state]
+    D --> E[Spawn specialized IssueCoderAgent subagent]
+    E --> F[Workspace Sync: Clone/Pull target repository]
+    F --> G[Checkout clean branch: issue-number]
+    G --> H[Survey Files & context harvesting via Gemini Pro]
+    H --> I[Propose & apply exact, complete file changes]
+    I --> J[Pre-flight Verification: Format, lint & compile builds]
+    J --> K[Git Commit & Push changes to GitHub]
+    K --> L[Launch Draft Pull Request via gh CLI]
+    L --> M[Re-run scanner to update dashboard to 'Active Branch']
+```
+
 ---
 
 ## 🛡️ Core Capabilities & Safety Guardrails
