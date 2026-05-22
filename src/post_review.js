@@ -56,6 +56,49 @@ function run() {
     fs.writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
     console.log(`📝 Local state updated: ${prKey} marked as reviewed up to ${updatedAt}`);
 
+    // Check if this PR belongs to a README review branch and increment cycle count
+    let headBranch = '';
+    try {
+      const rawPrInfo = execSync(
+        `gh pr view ${prNumber} -R ${repoWithOwner} --json headRefName`,
+        { encoding: 'utf8' }
+      );
+      const prInfo = JSON.parse(rawPrInfo);
+      headBranch = prInfo.headRefName || '';
+    } catch (e) {
+      console.warn('⚠️ Could not determine head branch name for PR:', e.message);
+    }
+
+    if (headBranch.startsWith('readme-review-')) {
+      const README_STATE_PATH = path.join(path.dirname(STATE_PATH), 'readme_agent_state.json');
+      let readmeState = { repositories: {} };
+      if (fs.existsSync(README_STATE_PATH)) {
+        try {
+          readmeState = JSON.parse(fs.readFileSync(README_STATE_PATH, 'utf8'));
+        } catch (e) {
+          console.warn('⚠️ Could not parse existing readme state file.');
+        }
+      }
+      if (!readmeState.repositories) {
+        readmeState.repositories = {};
+      }
+      if (!readmeState.repositories[repoWithOwner]) {
+        readmeState.repositories[repoWithOwner] = {
+          last_run: new Date().toISOString(),
+          pr_number: parseInt(prNumber),
+          branch: headBranch,
+          cycles: 0,
+          applied_cycles: 0
+        };
+      }
+      readmeState.repositories[repoWithOwner].cycles = (readmeState.repositories[repoWithOwner].cycles || 0) + 1;
+      readmeState.repositories[repoWithOwner].pr_number = parseInt(prNumber);
+      readmeState.repositories[repoWithOwner].branch = headBranch;
+      
+      fs.writeFileSync(README_STATE_PATH, JSON.stringify(readmeState, null, 2));
+      console.log(`📝 README state updated: ${repoWithOwner} cycles incremented to ${readmeState.repositories[repoWithOwner].cycles}`);
+    }
+
   } catch (error) {
     console.error('❌ Error posting review comment:', error.message);
     process.exit(1);
