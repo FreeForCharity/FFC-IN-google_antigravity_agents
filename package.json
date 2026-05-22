@@ -1,0 +1,23 @@
+{
+  "name": "ffc-in-google-antigravity-agents",
+  "version": "1.0.0",
+  "description": "Autonomous Gemini PR Reviewer and Issue Coder Agents for the FreeForCharity (FFC) ecosystem.",
+  "main": "src/review_runner.js",
+  "scripts": {
+    "scan": "node src/review_runner.js",
+    "review": "node src/post_review.js",
+    "code-issue": "node src/issue_coder.js",
+    "find-target": "node src/issue_coder_agent.js"
+  },
+  "keywords": [
+    "antigravity",
+    "autonomous",
+    "gemini",
+    "github-actions",
+    "pr-reviewer",
+    "issue-coder",
+    "self-healing"
+  ],
+  "author": "Google DeepMind / FFC Team",
+  "license": "MIT"
+}

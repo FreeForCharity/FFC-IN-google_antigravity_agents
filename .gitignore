@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local state database (critical to exclude for safety)
+.antigravity/
+
+# Generated dashboards & reports
+review_status_dashboard.html
+review_status_report.md
+src/pending_reviews/
+pending_reviews/
+
+# Local env files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env*.local
+
+# System files
+.DS_Store
+Thumbs.db
