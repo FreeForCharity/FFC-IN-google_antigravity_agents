@@ -8,30 +8,31 @@ Together, these agents form a fully self-healing, closed development loop that o
 
 ## 🌟 High-Level System Architecture
 
-```
-                    ┌──────────────────────────────┐
-                    │  Community GitHub Ecosystem  │
-                    └──────────────┬───────────────┘
-                                   │
-                   Scan Diffs &    │    Code Edits &
-                   PR Review       │    Draft PRs
-                                   ▼
-                    ┌──────────────────────────────┐
-                    │    Autonomous Dev Loop       │
-                    │                              │
-                    │   ┌──────────────────────┐   │
-                    │   │  PR Reviewer Agent   │   │
-                    │   └──────────────────────┘   │
-                    │   ┌──────────────────────┐   │
-                    │   │  Issue Coder Agent   │   │
-                    │   └──────────────────────┘   │
-                    └──────────────┬───────────────┘
-                                   │ Injects Compiled
-                                   │ State Metrics
-                                   ▼
-                    ┌──────────────────────────────┐
-                    │ Glassmorphic HTML Dashboard  │
-                    └──────────────────────────────┘
+The entire autonomous ecosystem operates as a closed loop connecting your community GitHub repositories, local background agents, and a local interactive dashboard:
+
+```mermaid
+graph TD
+    subgraph GH ["GitHub Community Ecosystem"]
+        A["External Contributor Issues & PRs"]
+    end
+
+    subgraph Agents ["Autonomous Dev Loop (Subscription-Backed)"]
+        B["PR Reviewer Agent"]
+        C["Issue Coder Agent"]
+    end
+
+    subgraph local ["Local Workspace & UI Dashboard"]
+        D["Glassmorphic HTML Dashboard"]
+    end
+
+    A -->|1. PR Diffs & Metadata| B
+    A -->|2. Issue Tickets| C
+    
+    B -->|3. Qualitative Code Reviews| A
+    C -->|4. Automated Draft PRs & Code Patches| A
+
+    B -->|5. Sync PR Review Status| D
+    C -->|6. Sync Issue Resolution Status| D
 ```
 
 ### 🔄 1. PR Reviewer Agent Loop (`task-102`)
